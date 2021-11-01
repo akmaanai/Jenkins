@@ -1,9 +1,7 @@
-FROM nginx:1.15.8
+FROM httpd:2.4
 
-ADD website-S3/* /usr/share/nginx/html/
-ADD nginx.conf /etc/nginx/nginx.conf
+WORKDIR /usr/local/apache2/htdocs
 
-EXPOSE 80
+COPY index.html .
 
-CMD ["nginx", "-g", "daemon off;"]
-
+EXPOSE 8080
