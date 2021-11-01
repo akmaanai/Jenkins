@@ -1,24 +1,27 @@
-node {
-    def app
+pipeline{
 
-    stage('Build image') {
-  
-       app = docker.build("0301199913579/web-aku-pipe")
-    }
+	agent any
 
-    stage('Test image') {
-  
+	environment {
+		DOCKERHUB_CREDENTIALS=credentials('docker_hub_login')
+	}
 
-        app.inside {
-            sh 'echo "Tests passed"'
+	stages {
+
+		stage('Build') {
+
+			steps {
+				sh 'docker build -t 0301199913579/zhazh:latest .'
+            }
         }
-    }
 
-    stage('Push image') {
-        
-        docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
+		stage('Push') {
+
+			steps {
+                withDockerRegistry([ credentialsId: "docker_hub_login", url: "" ]){
+				sh 'docker push 0301199913579/zhazh:latest'
+                }
+			}
+		}
+		
     }
-}
