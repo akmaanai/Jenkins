@@ -8,7 +8,7 @@ pipeline{
 
 	stages {
 
-		stage('Build') {
+		stage('Build image') {
 
 			steps {
 				sh 'docker build -t 0301199913579/zhazh:latest .'
@@ -16,14 +16,14 @@ pipeline{
 		}
 
 				
-                stage('Login') {
+                stage('Login to Dockerhub') {
 
                         steps {
                             sh 'docker login -p $DOCKERHUB_CREDENTIALS_PSW -u $DOCKERHUB_CREDENTIALS_USR'
                         }
                 }
 
-		stage('Push') {
+		stage('Push to Dockerhub') {
 
 			steps {
 				sh 'docker push 0301199913579/zhazh:latest'
