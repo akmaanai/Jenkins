@@ -12,17 +12,21 @@ pipeline{
 
 			steps {
 				sh 'docker build -t 0301199913579/zhazh:latest .'
-            }
-        }
+			}
+		}
+
+				
+                stage('Login') {
+
+                        steps {
+                            sh 'docker login -p $DOCKERHUB_CREDENTIALS_PSW -u $DOCKERHUB_CREDENTIALS_USR'
+                        }
+                }
 
 		stage('Push') {
 
 			steps {
-                withDockerRegistry([ credentialsId: "docker_hub_login", url: "" ]){
 				sh 'docker push 0301199913579/zhazh:latest'
-                }
 			}
 		}
-		
-         }
-   }
+	}
