@@ -29,5 +29,21 @@ pipeline{
 				sh 'docker push 0301199913579/zhazh:latest'
 			}
 		}
+		stage ('Deploy to staging') {
+                       steps {
+                        withCredentials ([usernamePassword(credentialsId: 'devserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                        script {
+                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@${env.dev_ip} \"docker pull 0301199913579/zhazh\""
+                        try {
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@${env.dev_ip} \"docker stop zhazh\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@${env.dev_ip} \"docker rm zhazh\""
+                        } catch (err) {
+                            echo: 'caught error: $err'
+                        }
+                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@${env.dev_ip} \"docker run --name zhazh -p 8080:80 -d 0301199913579/zhazh\""
+                    }
+                  }
+        	}  
+             }
 	}
-}
+    }
