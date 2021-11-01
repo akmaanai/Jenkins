@@ -1,21 +1,15 @@
-node {
-    def app
-
-    stage('Clone repository') {
-      
-
-        checkout scm
-    }
-
-    stage('Build image') {
+pipeline {
+    agent any
+    stages {
+        stage('Build image') {
   
-       app = docker.build("0301199913579/web-aku-pipe")
-    }
+         app = docker.build("0301199913579/web-aku-pipe")
+      }
 
-    stage('Test image') {
+         stage('Test image') {
   
 
-        app.inside {
+           app.inside {
             sh 'echo "Tests passed"'
         }
     }
@@ -27,4 +21,5 @@ node {
             app.push("latest")
         }
     }
+}
 }
